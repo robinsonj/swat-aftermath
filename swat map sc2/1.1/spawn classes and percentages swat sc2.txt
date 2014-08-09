@@ -1,0 +1,39 @@
+BlueDog 
+BlueZombie 
+charred 
+cherry 
+dog (fume/flame)
+dtnt 
+dtntGhoul (hyper) 
+FireflyZombie 
+garg (fume/flame/rad)
+ghoul (hyper) (fume/flame/rad)
+mutant 
+SGgarg (fume+, rad+)
+Stnt 
+tntZombie 
+tntDog 
+tntGhoul (hyper)
+
+zombie	-normal (flame/fume/rad)	85%	85% 	(20%/15%/5%)
+	-blue					2.5%
+	-cherry					.5%			
+	-dtnt					3%
+	-FireFly				2.5%
+	-stnt					1.5%
+	-tnt					5%
+
+dog	-normal (flame/fume)		5%	90%	(20%/20%)
+	-tnt					7%
+	-blue					3%
+		
+mutant	-normal				3%	95%
+	-charred				5%
+
+ghoul	-normal (hyper)	(flame)	(rad)	4%	88%	(25%)(25%)
+	-tnt    (hyper)				8%	(35%)
+	-dtnt   (hyper)				4%	(50%)
+
+garg	-normal (flame/fume/rad)	3%	95%	(20%/20%/10%)
+	-Sgarg  (fume+, rad+)			5%	(100%, 100%)
+	

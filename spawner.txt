@@ -1,0 +1,237 @@
+if iType == 'n008' then
+        //zombie initialization
+        set bQueue = true
+        if x == 0 then
+          call RedAddZombieMutation( oMob )
+          if GetRandomInt(0,10) == 0 then
+            set bQueue = RedBurninating(oMob, 1)
+          elseif GetRandomInt(-1, 398) < IMinBJ(1, udg_RadLevel) then
+            call RedRadinating(oMob, true)
+          endif
+        elseif x == 1 then
+          call RedAddZombieMutation( oMob )
+          set bQueue = RedBurninating(oMob, 4)
+        elseif GetRandomInt(-1, 398) < IMinBJ(1, udg_RadLevel) then
+          call RedRadinating(oMob, true)
+        elseif x == 2 then //yellow zombie
+          if (udg_NemesisStage < 1) and (GetRandomInt(0,2) == 1) then
+            set bQueue = RedLightenating(oMob)
+          endif
+        elseif x == 3 then //red zombie
+          set bQueue = RedAtomic(oMob)
+        elseif x == 4 then //blue zombie
+          if (udg_Nightmare > 1) and (udg_NemesisStage < 1) then
+            call UnitAddAbility(oMob, 'Apsh') //planar mutation
+            call UnitAddAbility(oMob, 'Agho') //permanent cloak
+            call UnitAddAbility(oMob, 'A0PC') //dmg penalty (electrified tip)
+            call UnitAddAbility(oMob, 'A0PD') //energy drain
+            call TriggerRegisterUnitEvent(gg_trg_ElectrifiedDeath, oMob, EVENT_UNIT_DEATH)
+            call SetUnitVertexColor(oMob, 45, 75, 255, 26)
+            call SetUnitUserData(oMob, 999)
+            set bQueue = false
+          endif
+        endif
+        if bQueue and (udg_QLi > 0) then //restore lives remaining from a previous zombie corpse
+          set udg_QLi = udg_QLi - 1
+          call SetUnitUserData( oMob, udg_QL[udg_QLi] )
+        endif
+      elseif iType == 'n009' then
+        //dog initialization
+        if x < 8 then
+          call RedBurninating(oMob, IMaxBJ(5-x, 0))
+        elseif ( (udg_CurrentDay > 1) and (not udg_BlueDog) and (GetRandomInt(1, 48-2*udg_iPlayerCount+udg_BossChance[3]) < (udg_Nightmare*4)) ) then //blue dog
+          set udg_BlueDog = true
+          set udg_BossChance[3] = udg_BossChance[3] + 41 - udg_iPlayerCount*7/3 //normalize the randomness a bit
+          call TriggerRegisterUnitEvent( gg_trg_BlueDogDeath, oMob, EVENT_UNIT_DEATH )
+          call UnitAddAbility( oMob, 'Arel' ) //regen
+          call UnitAddAbility( oMob, 'A0F4' ) //armor
+          call UnitAddAbility( oMob, 'AIlz' ) //health
+          if (udg_Nightmare > 1) and (udg_CurrentDay > 1) then
+            call UnitAddAbility( oMob, 'A0I0' + IMinBJ(udg_CurrentDay-2, 3) ) //EXT health
+          endif
+          call UnitAddAbility( oMob, 'A0I4' ) //+dmg and lightning
+          call UnitAddAbility( oMob, 'A0I7' ) //12s covert
+          call UnitAddAbility( oMob, 'A0PE') // +% movespeed
+          if true or (udg_Nightmare > 1) then // EXT only slow resistance
+            call SetUnitAbilityLevel(oMob, 'A0PE', 2)
+            call SetUnitMoveSpeed( oMob, RedCalcMoveSpeed( oMob, udg_NemesisStage ) / 2.5 ) 
+          endif
+          call SetUnitScale( oMob, 0.60, 0.60, 0.58 )
+          call SetUnitVertexColor(oMob, 45, 75, 255, 255)
+        endif
+      elseif iType == 'u001' then
+        //beast initialization
+        call TriggerRegisterUnitEvent( gg_trg_BeastDies, oMob, EVENT_UNIT_DEATH )
+        if x < 9 then
+          call RedBurninating(oMob, IMaxBJ(6-x, 0))
+        elseif GetRandomInt(-1, 398) < IMinBJ(1, udg_RadLevel) then
+          call RedRadinating(oMob, false)
+        endif
+        if (udg_CurrentDay > 1) and (GetRandomInt(1, 26 + 2*udg_Nightmare) > 27) then //spawn hyperbeast
+          call UnitRemoveAbility(oMob, 'ANbl')
+          call UnitAddAbility(oMob, 'A03Z') //+50 movespeed (exosuit)
+          call UnitAddAbility(oMob, 'AId7') //+25 armor
+          call UnitAddAbility(oMob, 'AIsx') //+25% atk speed (rapid-reload)
+          call UnitAddAbility(oMob, 'A0CV') //+4hps (survivalist)
+          call TriggerRegisterUnitEvent( gg_trg_HyperBeast, oMob, EVENT_UNIT_DAMAGED )
+        endif
+      elseif iType == 'u002' then
+        //grotesque initialization
+        if x < 3 then
+          call RedBurninating(oMob, 0)
+        elseif ((udg_CurrentDay > 1) and (udg_Nightmare > 0) and (udg_SuperGarg == null) and (GetRandomInt(0, 41-2*udg_iPlayerCount) < 1)) then //super grotesque
+          if RedRadinating(oMob, false) then //remains normal if rads maxed
+            set udg_SuperGarg = oMob
+            set udg_SuperGargFrozen = 0
+            call TriggerRegisterUnitEvent( gg_trg_SuperGargDeath, oMob, EVENT_UNIT_DEATH )
+            call UnitRemoveAbility( oMob, 'Ahea' ) //so they dont just heal the whole damn time
+            call UnitAddAbility( oMob, 'Arel' ) //regen
+            call UnitAddAbility( oMob, 'A0F4' ) //armor
+            call UnitAddAbility( oMob, 'AIlz' ) //health
+            if (udg_Nightmare > 1) and (udg_CurrentDay > 1) then
+              call UnitAddAbility( oMob, 'A0I0' + IMinBJ(udg_CurrentDay-2, 3) ) //EXT health
+            endif
+            call UnitAddAbility( oMob, 'AUau' ) //toxins
+            call UnitAddAbility( oMob, 'A04V' ) //toxic cloud
+            call SetUnitAbilityLevel( oMob, 'A02V', 1+udg_Nightmare) //more evade
+            call SetUnitScale( oMob, 1.5, 1.5, 1.4 )
+            call SetUnitUserData( oMob, 20 ) //checked in rad death actions. can be trumped by ion strike
+          endif
+        elseif GetRandomInt(-1, 398) < IMinBJ(1, udg_RadLevel) then
+          call RedRadinating(oMob, false) //remains normal if rads maxed
+        endif
+      elseif iType == 'n00S' then
+        //mutant initialization
+        if (udg_CurrentDay > 1) and (GetRandomInt(0,14-udg_iPlayerCount) < udg_nmsurv) then
+          if udg_Charred < ((udg_iPlayerCount+2)/3) then
+            call RedCharred(oMob, true, 2)
+          endif
+        endif
+      endif
+      set oMob = null
+    endif
+function RedBurninating takes unit oZombie, integer iTNT returns boolean
+   
+  if (GetRandomInt(0,8) < iTNT) then
+    //Exploding
+    call UnitAddAbility( oZombie, 'AIdn' ) //smoke
+    call UnitAddAbility( oZombie, 'A04S' ) //barrel
+    if ((udg_Nightmare > 0) and (GetRandomInt(0, 16-udg_iPlayerCount-(udg_NemesisStage/33)) < 1) and (GetUnitTypeId(oZombie) == 'n008')) then //super zombie
+      call UnitAddAbility( oZombie, 'A0F6' ) //flaming
+      call UnitAddAbility( oZombie, 'Arel' ) //regen
+      call UnitAddAbility( oZombie, 'A0F4' ) //armor
+      call UnitAddAbility( oZombie, 'AIlz' ) //health
+      if ((udg_Nightmare > 1) and (udg_CurrentDay > 1)) then
+        call UnitAddAbility( oZombie, 'A0I0' + IMinBJ(udg_CurrentDay-2, 3) ) //EXT health
+  call UnitAddAbility( oZombie, 'A0Q7' ) //EXT energy cap bonus
+  call SetUnitPathing( oZombie, false ) //Ignores collision
+        if ( GetUnitAbilityLevel( oZombie, 'Afzy' ) > 0 )  then
+          call SetUnitAbilityLevel( oZombie, 'Afzy', 5) // ultra brainlust
+  else
+    call UnitAddAbility( oZombie, 'Afzy' )
+          call SetUnitAbilityLevel( oZombie, 'Afzy', 4) // super brainlust
+        endif
+      endif
+      call UnitAddAbility( oZombie, 'A0DB' ) //barrel #2
+      call UnitAddAbility( oZombie, 'A0DC' ) //damage x2
+      call SetUnitScale( oZombie, 1.39, 1.39, 1.5 )
+    else
+      if GetRandomInt(0,2) < udg_Nightmare then
+        call UnitAddAbility( oZombie, 'A0DB' ) //barrel #2
+        call UnitAddAbility( oZombie, 'A0DC' ) //damage x2
+      else
+        call UnitAddAbility( oZombie, 'A04T' ) //damage
+      endif
+    endif
+    call SetUnitUserData( oZombie, 999 )
+    call SetUnitExploded( oZombie, true )
+    call SetUnitVertexColor(oZombie, 240, 150, 150, 255)
+    return false //set unituserdata
+  endif
+  if GetRandomInt(0,8) < (iTNT+1) then
+    //Toxic
+    call UnitAddAbility( oZombie, 'A04V' )
+    call UnitAddAbility( oZombie, 'AUau' )
+    call SetUnitUserData( oZombie, 999 )
+    call SetUnitVertexColor(oZombie, 204, 255, 128, 255)
+    return false //set unituserdata
+  endif
+  //Flaming
+  call UnitAddAbility( oZombie, 'A0F5'+udg_nmsurv )
+  call SetUnitVertexColor(oZombie, 255, 150, 81, 255)
+  return true //did not set unituserdata
+endfunction
+function RedTimedSpawnMinions takes integer iRegion, boolean bQueue returns nothing
+  local integer i
+  local integer j = udg_Difficulty
+  set i = GetRandomInt(4-udg_Difficulty+RedDiv(udg_Uber[12], 90)+udg_Survival, 6-j + Round(udg_Uber[12]/30.0 + udg_DiffTime/4.8)+udg_Survival)
+  if udg_NemesisStage < 1 then
+    if i > 21 then
+      set i = 21
+    endif
+    set j = Round(i * 0.25)+1
+    //Spawn mutants
+    if (i > j) and (GetRandomInt(1, 4) < udg_RadLevel) then //rad level is -1 to 5
+      set i = i - 1
+      set udg_QZ[udg_QC] = 'n00S'
+      set udg_QB[udg_QC] = iRegion
+      set udg_QQ[udg_QC] = bQueue
+      set udg_QC = udg_QC + 1
+    endif
+    //Spawn zombies
+    loop
+      set udg_QZ[udg_QC] = 'n008'
+      set udg_QB[udg_QC] = iRegion
+      set udg_QX[udg_QC] = 0
+      set udg_QQ[udg_QC] = bQueue
+      set udg_QC = udg_QC + 1
+      set i = i - 1
+      exitwhen i < j
+    endloop
+    //Spawn beasts, grotesques, dogs, and more mutants and zombies
+    loop
+      exitwhen i < 1
+      set j = GetRandomInt(0, 9)
+      if j < 1 then
+        set udg_QZ[udg_QC] = 'u001' //beast
+        set udg_QX[udg_QC] = IMaxBJ(0, GetRandomInt(0-udg_NightmareUpgrade, 77))
+      elseif j < 2 then
+        set udg_QZ[udg_QC] = 'u002' //grotesque
+        set udg_QX[udg_QC] = GetRandomInt(0, 30)
+      elseif j < 4 then
+        set udg_QZ[udg_QC] = 'n009' //dog
+        set udg_QX[udg_QC] = IMaxBJ(0, GetRandomInt(0-udg_Nightmare, 77))
+      else
+        if GetRandomInt(-1, 43) < udg_RadLevel then
+          set udg_QZ[udg_QC] = 'n00S' //mutant
+        else
+          set udg_QZ[udg_QC] = 'n008' //zombie
+          set udg_QX[udg_QC] = GetRandomInt(1, 13)
+        endif
+      endif
+      set udg_QB[udg_QC] = iRegion
+      set udg_QQ[udg_QC] = bQueue
+      set udg_QC = udg_QC + 1
+      set i = i - 1
+    endloop
+  else //nemesis spawns zombies in graveyard
+    if ((udg_Nightmare == 1) and (udg_NemesisStage > 70)) or (udg_GraveyardBattle and (udg_NemesisStage < 80)) then
+      //slow down zombie spawn rate for final part of the battle
+      if i > (2+udg_iPlayerCount/2) then
+        set i = 2+udg_iPlayerCount/2
+      endif
+    elseif i > 30 then
+      set i = 30
+    endif
+    loop
+      exitwhen i < 1
+      set udg_QZ[udg_QC] = 'n008' //zombie
+      set udg_QX[udg_QC] = GetRandomInt(1, 13)
+      set udg_QB[udg_QC] = -1
+      set udg_QQ[udg_QC] = bQueue
+      set udg_QC = udg_QC + 1
+      set i = i - 1
+    endloop
+  endif
+  call TriggerRegisterTimerEvent(gg_trg_MakeMinions, 0, false)
+endfunction
