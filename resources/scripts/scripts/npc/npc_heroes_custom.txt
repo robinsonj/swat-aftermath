@@ -1,0 +1,39 @@
+// Dota Heroes File
+// NOTE: This is not for creating new heroes, this is for taking a currently existing hero as a template and overriding
+// the specified key-value combinations.  Use override_hero <hero_to_override> for this.
+"DOTAHeroes"
+{
+	//=================================================================================================================
+	// HERO: Tactition
+	//=================================================================================================================
+	"npc_dota_hero_tact"
+	{
+		"override_hero"			"npc_dota_hero_pudge"
+		
+		// Abilities
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityLayout"				"5"
+		"Ability1"				"tact_weakpoint"							// Ability 1
+		"Ability2"				"tact_blitz"								// Ability 2
+		"Ability3"				"tact_endurance"							// Ability 3
+		"Ability4"				"tact_refined_rifle"							// Ability 4
+		"Ability5"				"nanites"				// Ability 5
+
+		"VisionNighttimeRange"		"600"
+		"VisionDaytimeRange"		"600"
+
+		"AttackDamageMin"			"70"										// Damage range min.
+		"AttackDamageMax"			"70"
+		"StatusHealth"				"930"
+		"MovementSpeed"				"350"
+		
+		"AttributeBaseStrength"		"30"										// Base strength
+		"AttributeStrengthGain"		"3"
+		"AttributeBaseAgility"		"10"										// Base agility
+		"AttributeAgilityGain"		"0"
+		"AttributeBaseIntelligence"	"10"										// Base intelligence
+		"AttributeIntelligenceGain"	"0"
+
+		"ArmorPhysical"				"-1.42"
+	}
+}
