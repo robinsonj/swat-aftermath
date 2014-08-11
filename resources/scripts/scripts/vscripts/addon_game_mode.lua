@@ -1,5 +1,5 @@
 -- Generated from template
-
+currentSpellBook = 0
 if CAddonTemplateGameMode == nil then
 	CAddonTemplateGameMode = class({})
 end

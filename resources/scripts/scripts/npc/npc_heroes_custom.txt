@@ -17,7 +17,7 @@
 		"Ability2"				"tact_blitz"								// Ability 2
 		"Ability3"				"tact_endurance"							// Ability 3
 		"Ability4"				"tact_refined_rifle"							// Ability 4
-		"Ability5"				"nanites"				// Ability 5
+		"Ability5"				"Spellbook"				// Ability 5
 
 		"VisionNighttimeRange"		"600"
 		"VisionDaytimeRange"		"600"

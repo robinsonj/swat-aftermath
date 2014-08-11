@@ -184,19 +184,22 @@
 		// General
 		//-------------------------------------------------------------------------------------------------------------
 		"BaseClass" 			"ability_datadriven"
-		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_TOGGLE"
 		"AbilityTextureName"		"axe_battle_hunger"
 		// Modifiers
 		//-------------------------------------------------------------------------------------------------------------
+		"OnToggleOn"
+		{
+			
+		}
 		"Modifiers"
 		{
-			"tact_nanite_modifier"
+			"nanites_mana_shield"
 			{
 				"IsHidden" "0"
-				"Passive" "1"
 				"Properties"
 				{
-					"MODIFIER_PROPERTY_BASEATTACK_BONUS_DAMAGE" "%attack_damage_bonus"
+					"MODIFIER_PROPERTY_INCOMING_DAMAGE_PERCENTAGE" "%shield_percent"
 				}
 			}
 		}
@@ -207,8 +210,28 @@
 			"01"
 			{
 				"var_type" "FIELD_INTEGER"
-				"attack_damage_bonus" "10 20 50 100"
+				"shield_percent" "10 20 50 100"
+			}
+		}
+	}
+	"Spellbook"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass" 			"ability_datadriven"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+		"AbilityTextureName"		"axe_battle_hunger"
+		"MaxLevel" 			"1"
+		// Modifiers
+		//-------------------------------------------------------------------------------------------------------------
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"		"spellbook.lua"
+				"Function"		"changeBook"
 			}
 		}
 	}
 }
+
